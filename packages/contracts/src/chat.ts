@@ -17,7 +17,7 @@ export type Message = z.infer<typeof MessageSchema>;
 /** Body accepted by POST /v1/chat/messages. */
 export const SendMessageInput = z.object({
     conversationId: z.string().min(1).optional(),
-    content: z.string().min(1).max(8000),
+    content: z.string().trim().min(1).max(8000),
 });
 export type SendMessageInput = z.infer<typeof SendMessageInput>;
 
