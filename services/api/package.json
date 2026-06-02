@@ -10,6 +10,7 @@
         "lint": "echo \"(api) no lint yet\"",
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
+        "test:watch": "vitest",
         "clean": "rimraf dist .turbo *.tsbuildinfo"
     },
     "dependencies": {
