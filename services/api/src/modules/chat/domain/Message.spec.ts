@@ -9,7 +9,7 @@ describe("createMessage", () => {
         expect(message.id).toBeTruthy();
         expect(message.createdAt).toBeTruthy();
         expect(message.content).toBe("hello");
-        expect(message.coversationId).toBe("c1");
+        expect(message.conversationId).toBe("c1");
         expect(message.role).toBe("user");
     });
 
