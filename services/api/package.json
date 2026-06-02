@@ -9,17 +9,19 @@
         "start": "node dist/index.js",
         "lint": "echo \"(api) no lint yet\"",
         "typecheck": "tsc --noEmit",
-        "test": "echo \"(api) no tests yet\"",
+        "test": "vitest run",
         "clean": "rimraf dist .turbo *.tsbuildinfo"
     },
     "dependencies": {
         "fastify": "^5.8.5",
-        "zod": "4.4.3"
+        "zod": "4.4.3",
+        "@dreamai/contracts": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "^24.12.4",
         "rimraf": "^6.0.1",
         "tsx": "^4.20.0",
-        "typescript": "6.0.3"
+        "typescript": "6.0.3",
+        "vitest": "^4.1.6"
     }
 }
