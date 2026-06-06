@@ -3,6 +3,7 @@ import helmet from "@fastify/helmet";
 import fastifySse from "@fastify/sse";
 import Fastify from "fastify";
 import { env } from "./config/env.js";
+import { chatRoutes } from "./modules/chat/presentation/chat.routes.js";
 
 export async function buildServer() {
   const app = Fastify({
@@ -29,11 +30,14 @@ export async function buildServer() {
 
   await app.register(fastifySse.default, { heartbeatInterval: 15000 });
   
+  await app.register(chatRoutes);
+  
   app.get("/healthz", async () => ({
     status: "ok",
     uptime: process.uptime(),
     version: "0.0.1",
   }));
+
 
   return app;
 }

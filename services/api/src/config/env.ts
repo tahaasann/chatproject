@@ -27,3 +27,6 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+/** Stable dev user until JWT auth (T-091+). */
+export const DEV_FALLBACK_USER_ID = "00000000-0000-0000-0000-000000000000";
