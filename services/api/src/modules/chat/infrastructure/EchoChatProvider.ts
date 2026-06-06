@@ -7,7 +7,7 @@ import type { IChatProviderPort } from "../ports/IChatProviderPort.js";
  */
 export class EchoChatProvider implements IChatProviderPort {
     async *streamCompletion(history: readonly Message[]): AsyncIterable<string> {
-        const lastUser = [...history].reverse().find((m) => m.role === "user");
+        const lastUser = history.findLast((m) => m.role === "user");
         const reply = lastUser ? `Echo: "${lastUser.content}" (stub - no real model connected yet.)` : "Hello! This is an echo stub; no real model is connected yet.";
 
         for (const word of reply.split(" ")) {
