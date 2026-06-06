@@ -27,7 +27,7 @@ export async function buildServer() {
     credentials: true,
   });
 
-  await app.register(fastifySse, { heartbeatInterval: 15000 });
+  await app.register(fastifySse.default, { heartbeatInterval: 15000 });
   
   app.get("/healthz", async () => ({
     status: "ok",
