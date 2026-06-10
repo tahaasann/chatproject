@@ -1,0 +1,29 @@
+{
+    "name": "@dreamai/marketing",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+      "dev": "next dev --port 3000",
+      "build": "next build",
+      "start": "next start --port 3000",
+      "lint": "echo \"(marketing) no lint yet\"",
+      "typecheck": "tsc --noEmit",
+      "test": "echo \"(marketing) no tests yet\"",
+      "clean": "rimraf .next .turbo *.tsbuildinfo"
+    },
+    "dependencies": {
+      "next": "16.2.6",
+      "react": "19.2.6",
+      "react-dom": "19.2.6"
+    },
+    "devDependencies": {
+      "@tailwindcss/postcss": "^4.3.0",
+      "@types/node": "^24.12.4",
+      "@types/react": "^19.2.0",
+      "@types/react-dom": "^19.2.0",
+      "rimraf": "^6.0.1",
+      "tailwindcss": "^4.3.0",
+      "typescript": "6.0.3"
+    }
+  }
