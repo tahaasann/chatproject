@@ -16,7 +16,7 @@ COPY packages/contracts packages/contracts
 COPY services/api services/api
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+    pnpm install --frozen-lockfile --prod=false
 
 WORKDIR /repo/services/api
 EXPOSE 3001

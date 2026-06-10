@@ -14,7 +14,7 @@ COPY packages/contracts packages/contracts
 COPY apps/app apps/app
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+    pnpm install --frozen-lockfile --prod=false
 
 WORKDIR /repo/apps/app
 RUN pnpm build
