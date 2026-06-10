@@ -1,11 +1,11 @@
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { useChatStream } from "./useChatStream";
 
 export function ChatPage(): React.JSX.Element {
     const { messages, isStreaming, error, send } = useChatStream();
     const [input, setInput] = useState("");
 
-    async function onSubmit(event: FormEvent): Promise<void> {
+    async function onSubmit(event: SubmitEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
         const text = input;
         setInput("");
