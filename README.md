@@ -83,4 +83,58 @@ JWT protection will be introduced in Phase 9 (T-091+).
 ---
 
 
+
+
+## Docker (full stack)
+
+Makinede yerel Node.js veya pnpm kurulu olmadan tüm Tracer stack'ini çalıştırın.
+
+### Stack'i başlatma
+
+```bash
+cd dreamai
+docker compose up --build
 ```
+
+### Servisler
+
+| Servis    | URL                                            |
+| --------- | ---------------------------------------------- |
+| Marketing | http://localhost:3000                          |
+| Chat app  | http://localhost:5173                          |
+| API       | http://localhost:3001/healthz                  |
+| Postgres  | localhost:5432 (Faz 8+)                        |
+| Redis     | localhost:6379 (ileride arka plan işleri için) |
+
+### Tek bir Docker imajı oluşturma
+
+```bash
+docker build -f services/api/Dockerfile -t dreamai-api .
+docker build -f apps/app/Dockerfile -t dreamai-app .
+docker build -f apps/marketing/Dockerfile -t dreamai-marketing .
+```
+
+### Ortam değişkeni dosyaları
+
+| Dosya          | Commit edilmeli mi? | Amaç                             |
+| -------------- | ------------------- | -------------------------------- |
+| `.env.example` | Evet                | Dokümante edilmiş şablon         |
+| `.env.local`   | Hayır               | Yerel gizli bilgiler (gitignore) |
+| `.env`         | Hayır               | Gizli bilgiler (gitignore)       |
+
+Marketing uygulaması için:
+
+```text
+apps/marketing/.env.example
+```
+
+dosyasını
+
+```text
+apps/marketing/.env.local
+```
+
+olarak kopyalayın ve gerekiyorsa `NEXT_PUBLIC_APP_URL` değerini değiştirin.
+
+---
+
