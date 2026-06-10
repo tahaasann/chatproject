@@ -30,6 +30,14 @@ export async function buildServer() {
 
   await app.register(fastifySse.default, { heartbeatInterval: 15000 });
   
+  app.setErrorHandler((error, request, reply) => {
+    request.log.error({ err: error }, "unhandled route error");
+    if (reply.sent || reply.raw.headersSent) {
+      return;
+    };
+    void reply.code(500).send({ code: "internal_error", message: "Internal server error." });
+  });
+  
   await app.register(chatRoutes);
   
   app.get("/healthz", async () => ({
