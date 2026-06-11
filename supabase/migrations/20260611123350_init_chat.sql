@@ -39,3 +39,45 @@ create table if not exists public.messages (
 );
 
 create index if not exists messages_conversation_id_created_at_idx on public.messages (conversation_id, created_at);
+
+-- ------------------------------------------------------
+-- Row-Level Security
+-- ------------------------------------------------------
+alter table public.conversations enable row level security;
+alter table public.messages enable row level security;
+
+-- conversations: owner-only access
+create policy "conversations_select_own"
+    on public.conversations for select
+    using (auth.uid() = user_id);
+
+create policy "conversations_insert_own"
+    on public.conversations for insert
+    with check (auth.uid() = user_id);
+
+create policy "conversations_update_own"
+    on public.conversations for update
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
+
+create policy "conversations_delete_own"
+    on public.conversations for delete
+    using (auth.uid() = user_id);
+
+-- messages: owner-only access
+create policy "messages_select_own"
+    on public.messages for select
+    using (auth.uid() = user_id);
+
+create policy "messages_insert_own"
+    on public.messages for insert
+    with check (auth.uid() = user_id);
+
+create policy "messages_update_own"
+    on public.messages for update
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
+
+create policy "messages_delete_own"
+    on public.messages for delete
+    using (auth.uid() = user_id);
