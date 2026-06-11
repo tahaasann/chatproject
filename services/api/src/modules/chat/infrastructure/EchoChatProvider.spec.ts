@@ -6,6 +6,7 @@ function userMessage(content: string): Message {
     return {
         id: "m1",
         conversationId: "c1",
+        userId: "u1",
         role: "user",
         content,
         createdAt: new Date().toISOString(),

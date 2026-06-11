@@ -1,13 +1,4 @@
-import type { Message } from "@dreamai/contracts";
-
-/** Temporary until T-084 moves Conversation into @dreamai/contracts. */
-export type Conversation = {
-    id: string;
-    userId: string;
-    title: string | null;
-    createdAt: string;
-    updatedAt: string;
-};
+import type { Conversation, Message } from "@dreamai/contracts";
 
 /**
  * Outbound port: persistence for conversations and messages.

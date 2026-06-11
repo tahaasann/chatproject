@@ -16,11 +16,13 @@ describe("InMemoryChatRepository", () => {
         const convo = await repo.createConversation({ userId: "u1" });
         const m1 = createMessage({
             conversationId: convo.id,
+            userId: "u1",
             role: "user",
             content: "first",
         });
         const m2 = createMessage({
             conversationId: convo.id,
+            userId: "u1",
             role: "assistant",
             content: "second",
         });
@@ -36,6 +38,7 @@ describe("InMemoryChatRepository", () => {
         const convo = await repo.createConversation({ userId: "u1" });
         const m = createMessage({
             conversationId: convo.id,
+            userId: "u1",
             role: "assistant",
             content: "…",
         });

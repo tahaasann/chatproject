@@ -6,13 +6,24 @@ export type MessageRole = z.infer<typeof MessageRole>;
 
 /** A single chat message as stored and exchanged. */
 export const MessageSchema = z.object({
-    id: z.string(),
-    conversationId: z.string(),
+    id: z.string().uuid(),
+    conversationId: z.string().uuid(),
+    userId: z.string().uuid(),
     role: MessageRole,
     content: z.string(),
-    createdAt: z.string(),
+    createdAt: z.string().datetime(),
 });
 export type Message = z.infer<typeof MessageSchema>;
+
+/** A conversation owned by a user. */
+export const ConversationSchema = z.object({
+    id: z.string().uuid(),
+    userId: z.string().uuid(),
+    title: z.string().nullable(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
+});
+export type Conversation = z.infer<typeof ConversationSchema>;
 
 /** Body accepted by POST /v1/chat/messages. */
 export const SendMessageInput = z.object({

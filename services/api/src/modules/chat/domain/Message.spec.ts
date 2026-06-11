@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createMessage } from "./Message.js";
 
 describe("createMessage", () => {
-    const base = { conversationId: "c1", role: "user" as const };
+    const base = { conversationId: "c1", userId: "u1", role: "user" as const };
 
     it("assigns an id, timestamp and trims content", () => {
         const message = createMessage({ ...base, content: "  hello  " });

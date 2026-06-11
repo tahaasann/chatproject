@@ -22,6 +22,7 @@ export class SendMessageUseCase {
 
         const userMessage = createMessage({
             conversationId,
+            userId: ctx.userId,
             role: "user",
             content: input.content,
         });
@@ -29,6 +30,7 @@ export class SendMessageUseCase {
 
         const assistantMessage = createMessage({
             conversationId,
+            userId: ctx.userId,
             role: "assistant",
             content: "…",
         });

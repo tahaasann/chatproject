@@ -6,6 +6,7 @@ import type { Message, MessageRole } from "@dreamai/contracts";
  */
 export function createMessage(params: {
     conversationId: string;
+    userId: string;
     role: MessageRole;
     content: string;
 }): Message {
@@ -17,6 +18,7 @@ export function createMessage(params: {
     return {
         id: randomUUID(),
         conversationId: params.conversationId,
+        userId: params.userId,
         role: params.role,
         content,
         createdAt: new Date().toISOString(),
