@@ -3,26 +3,28 @@ import { createMessage } from "../domain/Message.js";
 import { InMemoryChatRepository } from "./InMemoryChatRepository.js";
 
 describe("InMemoryChatRepository", () => {
+    const userId = "11111111-1111-4111-8111-111111111111";
+
     it("creates a conversation owned by the user", async () => {
         const repo = new InMemoryChatRepository();
-        const convo = await repo.createConversation({ userId: "u1", title: "hi" });
-        expect(convo.userId).toBe("u1");
+        const convo = await repo.createConversation({ userId, title: "hi" });
+        expect(convo.userId).toBe(userId);
         expect(convo.title).toBe("hi");
         expect(convo.id).toBeTruthy();
     });
 
     it("persists and lists messages in insertion order", async () => {
         const repo = new InMemoryChatRepository();
-        const convo = await repo.createConversation({ userId: "u1" });
+        const convo = await repo.createConversation({ userId });
         const m1 = createMessage({
             conversationId: convo.id,
-            userId: "u1",
+            userId,
             role: "user",
             content: "first",
         });
         const m2 = createMessage({
             conversationId: convo.id,
-            userId: "u1",
+            userId,
             role: "assistant",
             content: "second",
         });
@@ -35,10 +37,10 @@ describe("InMemoryChatRepository", () => {
 
     it("updates message content by id", async () => {
         const repo = new InMemoryChatRepository();
-        const convo = await repo.createConversation({ userId: "u1" });
+        const convo = await repo.createConversation({ userId });
         const m = createMessage({
             conversationId: convo.id,
-            userId: "u1",
+            userId,
             role: "assistant",
             content: "…",
         });
