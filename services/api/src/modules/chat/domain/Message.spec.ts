@@ -8,6 +8,7 @@ describe("createMessage", () => {
         const message = createMessage({ ...base, content: "  hello  " });
         expect(message.id).toBeTruthy();
         expect(message.createdAt).toBeTruthy();
+        expect(message.userId).toBe("u1");
         expect(message.content).toBe("hello");
         expect(message.conversationId).toBe("c1");
         expect(message.role).toBe("user");
