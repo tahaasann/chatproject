@@ -13,6 +13,8 @@ const EnvSchema = z.object({
         .map((origin) => origin.trim())
         .filter(Boolean),
     ),
+  SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_ANON_KEY: z.string().min(1).optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
@@ -30,3 +32,5 @@ export const env = parsed.data;
 
 /** Stable dev user until JWT auth (T-091+). */
 export const DEV_FALLBACK_USER_ID = "00000000-0000-0000-0000-000000000000";
+
+export const isSupabaseEnabled = Boolean(env.SUPABASE_URL && env.SUPABASE_ANON_KEY);
