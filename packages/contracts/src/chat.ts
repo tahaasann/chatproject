@@ -27,16 +27,16 @@ export type Conversation = z.infer<typeof ConversationSchema>;
 
 /** Body accepted by POST /v1/chat/messages. */
 export const SendMessageInput = z.object({
-    conversationId: z.string().min(1).optional(),
+    conversationId: z.string().uuid().optional(),
     content: z.string().trim().min(1).max(8000),
 });
 export type SendMessageInput = z.infer<typeof SendMessageInput>;
 
 /** Response of POST /v1/chat/messages - ids used to open the SSE stream. */
 export const SendMessageResult = z.object({
-    conversationId: z.string(),
-    userMessageId: z.string(),
-    assistantMessageId: z.string(),
+    conversationId: z.string().uuid(),
+    userMessageId: z.string().uuid(),
+    assistantMessageId: z.string().uuid(),
 });
 export type SendMessageResult = z.infer<typeof SendMessageResult>;
 
