@@ -44,6 +44,9 @@ describe("InMemoryChatRepository", () => {
         });
         await repo.saveMessage(m);
         await repo.updateMessageContent(m.id, "done");
+
+        const found = await repo.findMessage(m.id);
+        expect(found?.content).toBe("done");
     });
 
     it("returns undefined for an unknown message id", async () => {

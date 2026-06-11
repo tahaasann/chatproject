@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import type { Message } from "@dreamai/contracts";
+import type { Conversation, Message } from "@dreamai/contracts";
 import type { 
-    Conversation,
+    
     IChatRepositoryPort,
 } from "../ports/IChatRepositoryPort.js";
 
