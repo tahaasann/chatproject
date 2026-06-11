@@ -2,16 +2,18 @@ import { describe, expect, it } from "vitest";
 import { createMessage } from "./Message.js";
 
 describe("createMessage", () => {
-    const base = { conversationId: "c1", userId: "u1", role: "user" as const };
+    const CONV_ID = "11111111-1111-4111-8111-111111111111";
+    const USER_ID = "22222222-2222-4222-8222-222222222222";
+    const base = { conversationId: CONV_ID, userId: USER_ID, role: "user" as const };
 
     it("assigns an id, timestamp and trims content", () => {
         const message = createMessage({ ...base, content: "  hello  " });
         expect(message.id).toBeTruthy();
         expect(message.createdAt).toBeTruthy();
-        expect(message.userId).toBe("u1");
+        expect(message.userId).toBe(base.userId);
         expect(message.content).toBe("hello");
-        expect(message.conversationId).toBe("c1");
-        expect(message.role).toBe("user");
+        expect(message.conversationId).toBe(base.conversationId);
+        expect(message.role).toBe(base.role);
     });
 
     it("throws on empty/whitespace content", () => {
