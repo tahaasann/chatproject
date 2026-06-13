@@ -1,15 +1,28 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import { SendMessageInput, type StreamEvent } from "@dreamai/contracts";
-import { DEV_FALLBACK_USER_ID } from "../../../config/env.js";
+import { env, isSupabaseEnabled } from "../../../config/env.js";
 import { SendMessageUseCase } from "../application/SendMessageUseCase.js";
 import { EchoChatProvider } from "../infrastructure/EchoChatProvider.js";
 import { InMemoryChatRepository } from "../infrastructure/InMemoryChatRepository.js";
+import { createSupabaseChatRepository } from "../infrastructure/SupabaseChatRepository.js";
+import type { IChatRepositoryPort } from "../ports/IChatRepositoryPort.js";
 
 export async function chatRoutes(app: FastifyInstance): Promise<void> {
-    const repo = new InMemoryChatRepository();
     const provider = new EchoChatProvider();
+    const inMemoryRepo = new InMemoryChatRepository();
 
-    app.post("/v1/chat/messages", async (request, reply) => {
+    function repoFor(request: FastifyRequest): IChatRepositoryPort {
+        if(isSupabaseEnabled && request.accessToken) {
+            return createSupabaseChatRepository({
+                url: env.SUPABASE_URL!,
+                anonKey: env.SUPABASE_ANON_KEY!,
+                accessToken: request.accessToken,
+            });
+        }
+        return inMemoryRepo;
+    }
+
+    app.post("/v1/chat/messages", { preHandler: app.authenticate }, async (request, reply) => {
         const parsed = SendMessageInput.safeParse(request.body);
         if (!parsed.success) {
             return reply.code(400).send({
@@ -19,9 +32,9 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
             });
         }
 
-        const useCase = new SendMessageUseCase(repo);
+        const useCase = new SendMessageUseCase(repoFor(request));
         const result = await useCase.execute(parsed.data, {
-            userId: DEV_FALLBACK_USER_ID,
+            userId: request.userId,
         });
 
         return reply.code(201).send(result);
@@ -29,7 +42,7 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
 
     app.get<{ Params: { assistantMessageId: string } }>(
         "/v1/chat/stream/:assistantMessageId",
-        { sse: true },
+        { sse: true, preHandler: app.authenticate },
         async (request, reply) => {
             if (!reply.sse) {
                 return reply.code(406).send({
@@ -38,10 +51,11 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
                 });
             }
 
+            const repo = repoFor(request);
             const { assistantMessageId } = request.params;
             const assistant = await repo.findMessage(assistantMessageId);
 
-            if (!assistant) {
+            if (!assistant || assistant.userId !== request.userId) {
                 const errorEvent: StreamEvent = {
                     type: "error",
                     code: "chat.message.not_found",
@@ -66,14 +80,12 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
                     if (!reply.sse.isConnected) {
                         break;
                     }
-                    full += token;
-                    const tokenEvent: StreamEvent = { type: "token", value: token };
-                    await reply.sse.send({ event: "message", data: tokenEvent });
+                    full += token;                    
+                    await reply.sse.send({ event: "message", data: { type: "token", value: token } satisfies StreamEvent });
                 }
 
-                if (reply.sse.isConnected) {
-                    const done: StreamEvent = { type: "done", assistantMessageId };
-                    await reply.sse.send({ event: "message", data: done });
+                if (reply.sse.isConnected) {                    
+                    await reply.sse.send({ event: "message", data: { type: "done", assistantMessageId } satisfies StreamEvent });
                 }
             } catch (err) {
                 request.log.warn({ err, assistantMessageId }, "chat stream aborted");
