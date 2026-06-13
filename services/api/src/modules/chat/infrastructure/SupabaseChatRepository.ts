@@ -103,7 +103,7 @@ export function createSupabaseChatRepository(input: {
         },
 
         async findMessage(messageId) {
-            const { data, error } = await client.from("messages").select("id, conversation_id, user_id, role, content, created_at").eq("id", messageId).single();
+            const { data, error } = await client.from("messages").select("id, conversation_id, user_id, role, content, created_at").eq("id", messageId).maybeSingle();
 
             if(error) {
                 throw new Error(`chat.message.find_failed: ${error.message}`);
