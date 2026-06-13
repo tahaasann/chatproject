@@ -4,6 +4,7 @@ import fastifySse from "@fastify/sse";
 import Fastify from "fastify";
 import { env } from "./config/env.js";
 import { chatRoutes } from "./modules/chat/presentation/chat.routes.js";
+import { authPlugin } from "./plugins/auth.js";
 
 export async function buildServer() {
   const app = Fastify({
@@ -37,6 +38,8 @@ export async function buildServer() {
     };
     void reply.code(500).send({ code: "internal_error", message: "Internal server error." });
   });
+
+  await app.register(authPlugin);
   
   await app.register(chatRoutes);
   

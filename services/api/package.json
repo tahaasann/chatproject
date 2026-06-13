@@ -18,6 +18,8 @@
         "@fastify/cors": "^11.0.0",
         "@fastify/helmet": "^13.0.0",
         "@fastify/sse": "^0.4.0",
+        "fastify-plugin": "^5.0.1",
+        "jose": "^5.10.0",
         "zod": "4.4.3",
         "@dreamai/contracts": "workspace:*"
     },
