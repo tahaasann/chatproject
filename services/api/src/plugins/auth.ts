@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { env, isSupabaseEnabled } from "../config/env.js";
+import { DEV_FALLBACK_USER_ID, env, isSupabaseEnabled } from "../config/env.js";
 
 declare module "fastify" {
     interface FastifyRequest {
@@ -28,10 +28,14 @@ export const authPlugin = fp(async (app) => {
         "authenticate",
         async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
             if (!isSupabaseEnabled || !jwks) {
+                request.userId = DEV_FALLBACK_USER_ID;
+                return;
+                /** 
                 return reply.code(503).send({
                     code: "auth.not_configured",
                     message: "Auth is not configured.",
                 });
+                */
             }
 
             const header = request.headers.authorization;
