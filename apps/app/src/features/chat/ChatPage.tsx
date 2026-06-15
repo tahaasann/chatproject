@@ -1,8 +1,10 @@
 import { type SubmitEvent, useState } from "react";
 import { useChatStream } from "./useChatStream";
+import { useAuth } from "../auth/AuthProvider";
 
 export function ChatPage(): React.JSX.Element {
     const { messages, isStreaming, error, send } = useChatStream();
+    const { signOut } = useAuth();
     const [input, setInput] = useState("");
 
     async function onSubmit(event: SubmitEvent<HTMLFormElement>): Promise<void> {
@@ -16,6 +18,14 @@ export function ChatPage(): React.JSX.Element {
         <div className="flex h-screen flex-col bg-neutral-950 text-neutral-100">
             <header className="border-b border-neutral-800 px-6 py-4">
                 <h1 className="text-lg font-semibold">DreamAI - Chat</h1>
+                <button
+                    onClick={() => {
+                        void signOut();
+                    }}
+                    className="mt-2 text-xs text-neutral-500 hover:text-neutral-300"
+                >
+                    Sign out
+                </button>
                 <p className="text-xs text-neutral-500">
                     Echo mode (no real model connected yet)
                 </p>

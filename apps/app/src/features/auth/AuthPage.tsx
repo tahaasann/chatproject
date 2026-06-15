@@ -37,7 +37,7 @@ export function AuthPage(): React.JSX.Element {
             >
                 <h1 className="text-lg font-semibold">DreamAI</h1>
                 <p className="text-xs text-neutral-500">
-                    {mode === "signin" ? "Sign in to your account" : "Create aN account"}
+                    {mode === "signin" ? "Sign in to your account" : "Create an account"}
                 </p>
 
                 <input
