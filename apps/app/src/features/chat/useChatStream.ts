@@ -1,5 +1,6 @@
 import type { SendMessageResult, StreamEvent } from "@dreamai/contracts";
 import { useCallback, useRef, useState } from "react";
+import { useAuth } from "../auth/AuthProvider";
 
 export interface ChatMessage {
     id: string;
@@ -19,10 +20,17 @@ export function useChatStream(): UseChatStream {
     const [isStreaming, setIsStreaming] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const conversationId = useRef<string | null>(null);
+    const { session } = useAuth();
 
     const send = useCallback(async (text: string) => {
         const content = text.trim();
         if (content.length === 0 || isStreaming) {
+            return;
+        }
+        
+        const accessToken = session?.access_token;
+        if (!accessToken) {
+            setError("Not authenticated");
             return;
         }
 
@@ -35,7 +43,7 @@ export function useChatStream(): UseChatStream {
         try {
             const postRes = await fetch("/v1/chat/messages", {
                 method: "POST",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json", "authorization": `Bearer ${accessToken}` },
                 body: JSON.stringify({
                     content,
                     conversationId: conversationId.current ?? undefined,
@@ -55,7 +63,7 @@ export function useChatStream(): UseChatStream {
             ]);
 
             const streamRes = await fetch(`/v1/chat/stream/${assistantId}`, {
-                headers: { accept: "text/event-stream" },
+                headers: { accept: "text/event-stream", "authorization": `Bearer ${accessToken}` },
             });
 
             if (!streamRes.ok || !streamRes.body) {
@@ -78,7 +86,7 @@ export function useChatStream(): UseChatStream {
         } finally {
             setIsStreaming(false);
         }
-    }, [isStreaming]);
+    }, [isStreaming, session]);
 
     return { messages, isStreaming, error, send };
 }
