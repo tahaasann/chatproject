@@ -14,7 +14,8 @@
         "lint": "turbo run lint",
         "typecheck": "turbo run typecheck",
         "test": "turbo run test",
-        "clean": "turbo run clean && rimraf node_modules"
+        "clean": "turbo run clean && rimraf node_modules",
+        "ci": "turbo run test"
     },
     "devDependencies": {
         "rimraf": "^6.0.1",

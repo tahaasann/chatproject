@@ -1,6 +1,6 @@
 import type { SendMessageResult, StreamEvent } from "@dreamai/contracts";
 import { useCallback, useRef, useState } from "react";
-import { useAuth } from "../auth/AuthProvider";
+import { useAuth } from "../auth/AuthProvider.js";
 
 export interface ChatMessage {
     id: string;
