@@ -1,7 +1,7 @@
 import type { Message } from "@dreamai/contracts";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import { openAiHappyPathHandler } from "../../../../test/msw/openai/happyPathHandler.js";
+import { openAiHappyPathHandler } from "../../../test/msw/openai/happyPathHandler.js";
 import { OpenAIChatProvider } from "./OpenAIChatProvider.js";
 
 const server = setupServer(openAiHappyPathHandler);

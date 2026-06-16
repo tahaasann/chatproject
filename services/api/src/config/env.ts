@@ -15,6 +15,9 @@ const EnvSchema = z.object({
     ),
   SUPABASE_URL: z.string().url().optional(),
   SUPABASE_ANON_KEY: z.string().min(1).optional(),
+  CHAT_PROVIDER: z.enum(["echo", "openai", "anthropic", "google"]).default("echo"),
+  OPENAI_API_KEY: z.string().min(1).optional(),
+  OPENAI_MODEL: z.string().default("gpt-4o-mini"),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
