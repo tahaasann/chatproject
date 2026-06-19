@@ -2,13 +2,13 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import { SendMessageInput, type StreamEvent } from "@dreamai/contracts";
 import { env, isSupabaseEnabled } from "../../../config/env.js";
 import { SendMessageUseCase } from "../application/SendMessageUseCase.js";
-import { EchoChatProvider } from "../infrastructure/EchoChatProvider.js";
 import { InMemoryChatRepository } from "../infrastructure/InMemoryChatRepository.js";
 import { createSupabaseChatRepository } from "../infrastructure/SupabaseChatRepository.js";
 import type { IChatRepositoryPort } from "../ports/IChatRepositoryPort.js";
+import { createChatProvider } from "../../../composition/createChatProvider.js";
 
 export async function chatRoutes(app: FastifyInstance): Promise<void> {
-    const provider = new EchoChatProvider();
+    const provider = createChatProvider();
     const inMemoryRepo = new InMemoryChatRepository();
 
     function repoFor(request: FastifyRequest): IChatRepositoryPort {
