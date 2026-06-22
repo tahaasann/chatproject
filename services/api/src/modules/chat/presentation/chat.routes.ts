@@ -12,7 +12,7 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
     const inMemoryRepo = new InMemoryChatRepository();
 
     function repoFor(request: FastifyRequest): IChatRepositoryPort {
-        if(isSupabaseEnabled && request.accessToken) {
+        if (isSupabaseEnabled && request.accessToken) {
             return createSupabaseChatRepository({
                 url: env.SUPABASE_URL!,
                 anonKey: env.SUPABASE_ANON_KEY!,
@@ -79,24 +79,43 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
             let full = "";
 
             try {
-                const meta: StreamEvent = {
-                    type: "meta",
-                    assistantMessageId,
-                    conversationId: assistant.conversationId,
-                };
-                await reply.sse.send({ event: "message", data: meta });
+                const streamStartedAt = performance.now();
+                let metaSent = false;
 
-                // Temizlenmiş geçmişi (historyToSend) yapay zekaya gönderiyoruz
                 for await (const token of provider.streamCompletion(historyToSend)) {
                     if (!reply.sse.isConnected) {
                         break;
                     }
-                    full += token;                    
-                    await reply.sse.send({ event: "message", data: { type: "token", value: token } satisfies StreamEvent });
+
+                    if (!metaSent) {
+                        const ttftMs = Math.round(performance.now() - streamStartedAt);
+                        request.log.info({ ttftMs, assistantMessageId }, "chat.stream.ttft");
+
+                        const meta: StreamEvent = {
+                            type: "meta",
+                            assistantMessageId,
+                            conversationId: assistant.conversationId,
+                            ttftMs,
+                        };
+                        await reply.sse.send({ event: "message", data: meta });
+                        metaSent = true;
+                    }
+
+                    full += token;
+                    await reply.sse.send({
+                        event: "message",
+                        data: { type: "token", value: token } satisfies StreamEvent,
+                    });
                 }
 
-                if (reply.sse.isConnected) {                    
-                    await reply.sse.send({ event: "message", data: { type: "done", assistantMessageId } satisfies StreamEvent });
+                if (reply.sse.isConnected && !metaSent) {
+                    const meta: StreamEvent = {
+                        type: "meta",
+                        assistantMessageId,
+                        conversationId: assistant.conversationId,
+                        ttftMs: Math.round(performance.now() - streamStartedAt),
+                    };
+                    await reply.sse.send({ event: "message", data: meta });
                 }
             } catch (err) {
                 request.log.warn({ err, assistantMessageId }, "chat stream aborted");

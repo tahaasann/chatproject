@@ -45,4 +45,4 @@ export type SendMessageResult = z.infer<typeof SendMessageResult>;
  * Canonical SSE event schema streamed from GET /v1/chat/stream/:id.
  * Discriminated union — every event has a `type`.
  */
-export type StreamEvent = | { type: "meta"; assistantMessageId: string; conversationId: string } | { type: "token"; value: string } | { type: "done"; assistantMessageId: string } | { type: "error"; code: string; message: string };
+export type StreamEvent = | { type: "meta"; assistantMessageId: string; conversationId: string; ttftMs: number; } | { type: "token"; value: string } | { type: "done"; assistantMessageId: string } | { type: "error"; code: string; message: string };
