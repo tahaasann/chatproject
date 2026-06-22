@@ -66,6 +66,16 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
             }
 
             const history = await repo.listMessages(assistant.conversationId);
+
+            /**
+            * historyToSend Nedir? (Hayati Hata Çözümü - .slice(0, -1) Dehası 🚨)
+            * Veritabanından gelen geçmiş mesaj dizisinin en sonunda bizim rezerve ettiğimiz
+            * asistan yer tutucu mesajı ("…") yer alır. OpenAI API'sinin patlamasını önlemek ve
+            * son mesajın kesinlikle "user" (kullanıcı) olmasını garanti etmek için,
+            * bu son yer tutucu elemanı diziden kırpıp (çıkartıp) yapay zekaya öyle gönderiyoruz.
+            */
+            const historyToSend = history.slice(0, -1);
+
             let full = "";
 
             try {
@@ -76,7 +86,8 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
                 };
                 await reply.sse.send({ event: "message", data: meta });
 
-                for await (const token of provider.streamCompletion(history)) {
+                // Temizlenmiş geçmişi (historyToSend) yapay zekaya gönderiyoruz
+                for await (const token of provider.streamCompletion(historyToSend)) {
                     if (!reply.sse.isConnected) {
                         break;
                     }
