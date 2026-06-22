@@ -29,6 +29,7 @@ export type Conversation = z.infer<typeof ConversationSchema>;
 export const SendMessageInput = z.object({
     conversationId: z.string().uuid().optional(),
     content: z.string().trim().min(1).max(8000),
+    modelId: z.string().min(1).optional(),
 });
 export type SendMessageInput = z.infer<typeof SendMessageInput>;
 
