@@ -1,6 +1,6 @@
 import type { Message } from "@dreamai/contracts";
 import OpenAI from "openai";
-import type { IChatProviderPort } from "../ports/IChatProviderPort.js";
+import type { IChatProviderPort } from "../../providers/ports/IChatProviderPort.js";
 
 export interface OpenAIChatProviderDeps{
     apiKey: string;

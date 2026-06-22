@@ -18,6 +18,16 @@ const EnvSchema = z.object({
   CHAT_PROVIDER: z.enum(["echo", "openai", "anthropic", "google"]).default("echo"),
   OPENAI_API_KEY: z.string().min(1).optional(),
   OPENAI_MODEL: z.string().default("gpt-4o-mini"),
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  ANTHROPIC_MODEL: z.string().default("claude-3-5-sonnet-20240620"),
+  GOOGLE_API_KEY: z.string().min(1).optional(),
+  GOOGLE_MODEL: z.string().default("gemini-2.5-flash"),
+  XAI_API_KEY: z.string().min(1).optional(),
+  XAI_MODEL: z.string().default("gemini-2.5-flash"),
+  QWEN_API_KEY: z.string().min(1).optional(),
+  QWEN_MODEL: z.string().default("gemini-2.5-flash"),
+  ZAI_API_KEY: z.string().min(1).optional(),
+  ZAI_MODEL: z.string().default("gemini-2.5-flash"),
 });
 
 const parsed = EnvSchema.safeParse(process.env);

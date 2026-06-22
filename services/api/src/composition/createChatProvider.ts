@@ -1,15 +1,14 @@
 import { env } from "../config/env.js";
 import { EchoChatProvider } from "../modules/chat/infrastructure/EchoChatProvider.js";
-import { OpenAIChatProvider } from "../modules/chat/infrastructure/OpenAIChatProvider.js";
-import type { IChatProviderPort } from "../modules/chat/ports/IChatProviderPort.js";
+import { createProviderRegistry } from "./createProviderRegistry.js";
 
-export function createChatProvider(): IChatProviderPort {
-    if (env.CHAT_PROVIDER === "openai" && env.OPENAI_API_KEY) {
-        return new OpenAIChatProvider({
-            apiKey: env.OPENAI_API_KEY,
-            model: env.OPENAI_MODEL,
-        });
+const registry = createProviderRegistry();
+
+export function createChatProvider(){
+    if (env.CHAT_PROVIDER === "echo" ) {
+        return new EchoChatProvider();
     }
 
-    return new EchoChatProvider();
+    const provider = registry.resolve(env.CHAT_PROVIDER);
+    return provider ?? new EchoChatProvider();
 }

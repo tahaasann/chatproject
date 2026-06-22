@@ -1,5 +1,5 @@
 import type { Message } from "@dreamai/contracts";
-import type { IChatProviderPort } from "../ports/IChatProviderPort.js";
+import type { IChatProviderPort } from "../../providers/ports/IChatProviderPort.js";
 
 /**
  * Stub provider - no LLM. Echoes the last user message word-by-word
