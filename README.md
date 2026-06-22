@@ -15,6 +15,8 @@ Bu sürümde çalışan özellikler:
 * Next.js marketing sitesi
 * Vite + React chat uygulaması
 * SSE streaming desteği
+* `CHAT_PROVIDER=openai` + `OPENAI_API_KEY` ile gerçek model
+* Key yoksa otomatik Echo fallback
 
 Sonraki fazlarda OpenAI ve diğer sağlayıcılar eklenecektir.
 
