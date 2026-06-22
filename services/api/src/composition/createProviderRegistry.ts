@@ -3,6 +3,7 @@ import { env } from "../config/env.js";
 import { EchoChatProvider } from "../modules/chat/infrastructure/EchoChatProvider.js";
 import { OpenAIChatProvider } from "../modules/chat/infrastructure/OpenAIChatProvider.js";
 import { AnthropicChatProvider } from "../modules/providers/infrastructure/anthropic/AnthropicChatProvider.js";
+import { GeminiChatProvider } from "../modules/providers/infrastructure/google/GeminiChatProvider.js";
 import { ProviderRegistry } from "../modules/providers/infrastructure/ProviderRegistry.js";
 import type { IChatProviderPort } from "../modules/providers/ports/IChatProviderPort.js";
 import type { IProviderRegistryPort } from "../modules/providers/ports/IProviderRegistryPort.js";
@@ -12,6 +13,7 @@ export function createProviderRegistry(): IProviderRegistryPort {
 
     registry.register("openai", createOpenAiProvider());
     registry.register("anthropic", createAnthropicProvider());
+    registry.register("google", createGoogleProvider());
 
     return registry;
 }
@@ -31,6 +33,16 @@ function createAnthropicProvider(): IChatProviderPort {
         return new AnthropicChatProvider({
             apiKey: env.ANTHROPIC_API_KEY,
             model: env.ANTHROPIC_MODEL,
+        });
+    }
+    return new EchoChatProvider();
+}
+
+function createGoogleProvider(): IChatProviderPort {
+    if (env.GOOGLE_API_KEY) {
+        return new GeminiChatProvider({
+            apiKey: env.GOOGLE_API_KEY,
+            model: env.GOOGLE_MODEL,
         });
     }
     return new EchoChatProvider();
