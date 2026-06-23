@@ -32,10 +32,19 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
             });
         }
 
-        const useCase = new SendMessageUseCase(repoFor(request));
-        const result = await useCase.execute(parsed.data, {
-            userId: request.userId,
-        });
+        let result;
+        try {
+            const useCase = new SendMessageUseCase(repoFor(request));
+            result = await useCase.execute(parsed.data, { userId: request.userId });
+        } catch (err) {
+            if (err instanceof Error && err.message === "chat.conversation.forbidden") {
+                return reply.code(403).send({
+                    code: "chat.conversation.forbidden",
+                    message: "Conversation not found or access denied.",
+                });
+            }
+            throw err;
+        }
 
         return reply.code(201).send(result);
     });

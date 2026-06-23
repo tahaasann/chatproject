@@ -20,6 +20,13 @@ export class SendMessageUseCase {
             conversationId = conversation.id;
         }
 
+        if (conversationId) {
+            const conversation = await this.repo.findConversation(conversationId);
+            if (!conversation || conversation.userId !== ctx.userId) {
+                throw new Error("chat.conversation.forbidden");
+            }
+        }
+
         const userMessage = createMessage({
             conversationId,
             userId: ctx.userId,

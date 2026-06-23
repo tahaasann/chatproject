@@ -16,4 +16,6 @@ export interface IChatRepositoryPort {
     listMessages(conversationId: string): Promise<readonly Message[]>;
 
     findMessage(messageId: string): Promise<Message | undefined>;
+
+    findConversation(conversationId: string): Promise<Conversation | undefined>;
 }

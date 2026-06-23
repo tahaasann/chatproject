@@ -45,6 +45,11 @@ export class InMemoryChatRepository implements IChatRepositoryPort {
         return this.messagesByConversation.get(conversationId) ?? [];
     }
 
+
+    async findConversation(conversationId: string): Promise<Conversation | undefined> {
+        return this.conversations.get(conversationId);
+    }
+    
     async findMessage(messageId: string): Promise<Message | undefined> {
         return this.messagesById.get(messageId);
     }

@@ -102,6 +102,18 @@ export function createSupabaseChatRepository(input: {
             return (data as MessageRow[]).map(toMessage);
         },
 
+        async findConversation(conversationId) {
+            const { data, error } = await client.from("conversations").select("id, user_id, title, created_at, updated_at").eq("id", conversationId).maybeSingle();
+
+            if(error) {
+                throw new Error(`chat.conversation.find_failed: ${error.message}`);
+            }
+
+            return data ? toConversation(data as ConversationRow) : undefined;
+        },
+
+        
+
         async findMessage(messageId) {
             const { data, error } = await client.from("messages").select("id, conversation_id, user_id, role, content, created_at").eq("id", messageId).maybeSingle();
 
