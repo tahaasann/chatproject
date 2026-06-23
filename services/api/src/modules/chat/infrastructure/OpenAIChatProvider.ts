@@ -30,7 +30,7 @@ export class OpenAIChatProvider implements IChatProviderPort {
         });
 
         for await (const chunk of stream) {
-            const token = chunk.choices[0]?.delta.content ?? "";
+            const token = chunk.choices[0]?.delta?.content ?? "";
             if (token) {
                 yield token;
             }

@@ -15,7 +15,9 @@ const EnvSchema = z.object({
     ),
   SUPABASE_URL: z.string().url().optional(),
   SUPABASE_ANON_KEY: z.string().min(1).optional(),
-  CHAT_PROVIDER: z.enum(["echo", "openai", "anthropic", "google"]).default("echo"),
+  CHAT_PROVIDER: z
+    .enum(["echo", "openai", "anthropic", "google", "xai"])
+    .default("echo"),
   OPENAI_API_KEY: z.string().min(1).optional(),
   OPENAI_MODEL: z.string().default("gpt-4o-mini"),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
@@ -23,7 +25,7 @@ const EnvSchema = z.object({
   GOOGLE_API_KEY: z.string().min(1).optional(),
   GOOGLE_MODEL: z.string().default("gemini-2.5-flash"),
   XAI_API_KEY: z.string().min(1).optional(),
-  XAI_MODEL: z.string().default("gemini-2.5-flash"),
+  XAI_MODEL: z.string().default("grok-2-latest"),
   QWEN_API_KEY: z.string().min(1).optional(),
   QWEN_MODEL: z.string().default("gemini-2.5-flash"),
   ZAI_API_KEY: z.string().min(1).optional(),
