@@ -8,5 +8,5 @@ allowBuilds:
   sharp: true
   supabase: true
   msw: true
-  '@google/genai': set this to true or false
-  protobufjs: set this to true or false
+  "@google/genai": true
+  protobufjs: true
