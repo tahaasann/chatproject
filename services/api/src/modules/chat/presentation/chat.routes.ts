@@ -63,7 +63,19 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
                 });
             }
 
-            const repo = repoFor(request);
+            let repo: IChatRepositoryPort;
+            try {
+                repo = repoFor(request);
+            } catch (err) {
+                const errorEvent: StreamEvent = {
+                    type: "error",
+                    code: "chat.auth.token_required",
+                    message: "Authentication required.",
+                };
+                await reply.sse.send({ event: "message", data: errorEvent });
+                return;
+            }
+
             const { assistantMessageId } = request.params;
             const assistant = await repo.findMessage(assistantMessageId);
 
@@ -90,19 +102,15 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
 
             let full = "";
 
+            const streamStartedAt = performance.now();
+            let metaSent = false;
+
             try {
-                const streamStartedAt = performance.now();
-                let metaSent = false;
-
                 for await (const token of provider.streamCompletion(historyToSend)) {
-                    if (!reply.sse.isConnected) {
-                        break;
-                    }
-
+                    if (!reply.sse.isConnected) break;
                     if (!metaSent) {
                         const ttftMs = Math.round(performance.now() - streamStartedAt);
                         request.log.info({ ttftMs, assistantMessageId }, "chat.stream.ttft");
-
                         const meta: StreamEvent = {
                             type: "meta",
                             assistantMessageId,
@@ -129,8 +137,25 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
                     };
                     await reply.sse.send({ event: "message", data: meta });
                 }
+
+                if (reply.sse.isConnected) {
+                    await reply.sse.send({
+                        event: "message",
+                        data: { type: "done", assistantMessageId } satisfies StreamEvent,
+                    });
+                }
             } catch (err) {
                 request.log.warn({ err, assistantMessageId }, "chat stream aborted");
+
+
+                if (reply.sse.isConnected) {
+                    const errorEvent: StreamEvent = {
+                        type: "error",
+                        code: "chat.stream.failed",
+                        message: "Assistant stream failed."
+                    };
+                    await reply.sse.send({ event: "message", data: errorEvent });
+                }
             }
 
             if (full.trim().length > 0) {
