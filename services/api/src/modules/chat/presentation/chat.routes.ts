@@ -147,7 +147,6 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
             } catch (err) {
                 request.log.warn({ err, assistantMessageId }, "chat stream aborted");
 
-
                 if (reply.sse.isConnected) {
                     const errorEvent: StreamEvent = {
                         type: "error",
