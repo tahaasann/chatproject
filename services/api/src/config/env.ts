@@ -27,9 +27,11 @@ const EnvSchema = z.object({
   XAI_API_KEY: z.string().min(1).optional(),
   XAI_MODEL: z.string().default("grok-2-latest"),
   QWEN_API_KEY: z.string().min(1).optional(),
-  QWEN_MODEL: z.string().default("gemini-2.5-flash"),
+  QWEN_MODEL: z.string().default("qwen-plus"),
   ZAI_API_KEY: z.string().min(1).optional(),
-  ZAI_MODEL: z.string().default("gemini-2.5-flash"),
+  ZAI_MODEL: z.string().default("glm-4-flash"),
+  DEEPSEEK_API_KEY: z.string().min(1).optional(),
+  DEEPSEEK_MODEL: z.string().default("deepseek-chat"),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
