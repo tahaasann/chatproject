@@ -12,7 +12,10 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
     const inMemoryRepo = new InMemoryChatRepository();
 
     function repoFor(request: FastifyRequest): IChatRepositoryPort {
-        if (isSupabaseEnabled && request.accessToken) {
+        if (isSupabaseEnabled) {
+            if (!request.accessToken) {
+                throw new Error("chat.auth.token_required");
+            }
             return createSupabaseChatRepository({
                 url: env.SUPABASE_URL!,
                 anonKey: env.SUPABASE_ANON_KEY!,

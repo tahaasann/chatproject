@@ -47,4 +47,18 @@ describe("SendMessageUseCase", () => {
     expect(assistant?.role).toBe("assistant");
     expect(user?.id).not.toBe(assistant?.id);
   });
+
+  it("throws forbidden error when shaving a message to another user's conversation", async () => {
+    const repo = new InMemoryChatRepository();
+    const useCase = new SendMessageUseCase(repo);
+
+    const otherConvo = await repo.createConversation({ userId: "other-user-uuid" });
+
+    await expect(
+      useCase.execute(
+        { conversationId: otherConvo.id, content: "hijack" },
+        { userId },
+      )
+    ).rejects.toThrow("chat.conversation.forbidden");
+  })
 });
